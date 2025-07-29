@@ -113,6 +113,55 @@ app.delete("/cars/:id", (req, res) => {
     }
 })
 
+//BE3.4_CW
+// update the data
+
+app.post("/cars/:id", (req, res) => {
+    const { id } = req.params;
+    const data = req.body;
+
+    if (!id) {
+        return res
+            .status(400)
+            .json({
+                success: false,
+                message: "Id are missing"
+            });
+    };
+
+    if (!data.make || !data.model || !data.year) {
+        return res
+            .status(400)
+            .json({
+                success: false,
+                message: "All fields are required"
+            })
+    }
+
+    const numId = parseInt(id);
+
+    const carToUpdate = cars.find((curr) => curr.id === numId);
+    // console.log(carToUpdate)
+
+    if (!carToUpdate) {
+        return res
+            .status(404)
+            .json({
+                success: false,
+                message: "Car not found."
+            })
+    }
+    Object.assign(carToUpdate, data);
+
+    return res
+        .status(200)
+        .json({
+            success: true,
+            message: "Car data updated successfully",
+            data: data
+        })
+});
+
 app.listen(PORT, () => {
     console.log(`server in running on http://localhost:${PORT}`)
 })
